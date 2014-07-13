@@ -3,7 +3,7 @@
     <div id="footer">
       <div class="container">
       	<hr>
-        <p class="text-muted">&copy; Samsul Ma'arif <?php echo date(Y); ?></p>
+        <p class="text-muted">&copy; Samsul Ma'arif <?php echo date('Y'); ?></p>
       </div>
     </div>
 

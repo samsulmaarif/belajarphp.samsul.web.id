@@ -17,6 +17,14 @@
 <?php 
 include 'config.php';
 
+// BEGIN -- Per Halaman --
+require_once 'halaman.php';
+
+$per_halaman = 5;
+$halaman = new kelas_halaman($per_halaman);
+// END -- Per Halaman --
+
+
 $koneksi = mysql_connect($db_host, $db_user, $db_passwd);
 if (!$koneksi) {
 	die("Tidak dapat terhubung dengan basisdata :<br />" . mysql_error());
@@ -34,6 +42,18 @@ if (!$koneksi) {
 			# Tampilkan pesan error (lagi)
 			die("Tidak dapat melakukan query :<br />" . mysql_error());
 		} else {
+			// BEGIN -- Per Halaman --
+			$jum_baris = mysql_num_rows($hasil);
+			$halaman->tentukan_total_baris($jum_baris);
+			$awal_record = $halaman->peroleh_awal_record();
+			
+			$newQuery = "SELECT * FROM $db_tabel " . "LIMIT $awal_record, $per_halaman";
+			$hasil = mysql_query($newQuery);
+			
+			$nomor = $awal_record;
+			
+			// END -- Per Halaman --
+			
 			# Tampilkan data
 			while ($PerBaris = mysql_fetch_row($hasil)) {
 				# Tampilkan data per baris
@@ -55,6 +75,10 @@ if (!$koneksi) {
 	}
 }
 echo "</table><br />";
+
+// Tampilkan Link Halaman
+$halaman->tampilkan_link_halaman();
+
 if ($panjang = mysql_num_rows($hasil)) {
 	# code...
 	echo "Jumlah Total : " . $panjang . "<br />";
